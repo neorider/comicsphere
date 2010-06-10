@@ -1,8 +1,6 @@
 #labels Phase-Requirements,Featured
 #summary Road map of the ComicSphere
-
 <wiki:toc />
-
 = Road map =
 
 == Vision ==
@@ -13,25 +11,19 @@ An online/offline comic viewer delivering best comic reading experience. Meanwhi
 
 Couples of milestones are planned:
 
- # Client side viewer with basic features
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
-
- # Client side viewer + server side content providers
-  * TBD
-
- # On-spot comment system
-  * TBD
-
- # Comic wiki integration
-  * TBD
-
- # Achievement system
-  * TBD
-
- # Offline/desktop version
-  * TBD
-
- # Advertisement solution
-  * TBD
+# Client side viewer with basic features
+ * Text in *bold* or _italic_
+ * Headings, paragraphs, and lists
+ * Automatic links to other wiki pages
+# Client side viewer + server side content providers
+ * TBD
+# On-spot comment system
+ * TBD
+# Comic wiki integration
+ * TBD
+# Achievement system
+ * TBD
+# Offline/desktop version
+ * TBD
+# Advertisement solution
+ * TBD
