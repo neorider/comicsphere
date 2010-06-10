@@ -1,5 +1,5 @@
 #labels Phase-Design
-# Detailed plan for code development  
+#summary Detailed plan for code development  
 
 = Development plan =
 
