@@ -1,8 +1,13 @@
 #labels Phase-Design
 #summary Detailed plan for code development  
 
-= Development plan =
+= Recent todos =
 
- * Data provider for ImageStack and cache/preload mechanism 
- * More layouts for ImageStack
+ * Data provider for `ImageStack` and cache/preload mechanism 
+ * More layouts for `ImageStack`
  * Scrolling/switching images
+ 
+== Planned tasks =
+ 
+ * TBD
+ 

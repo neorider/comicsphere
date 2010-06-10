@@ -11,18 +11,35 @@ An online/offline comic viewer delivering best comic reading experience. Meanwhi
 Couples of milestones are planned:
 
  # Client side viewer with basic features
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+  * Image loading & presentation
+  * Various views: single image, coverflow, thumbnail tiles, magazine list, etc
+  * Basic view options like zooming, rotate, etc
+  * Comic book specific interactions
  # Client side viewer + server side content providers
-  * TBD
+  * Web server as image provider
+  * Zip archives as image provider
+  * External websites as image provider
+  * Comic related information and index data
  # On-spot comment system
-  * TBD
+  * End user sets focus spot on a image page and leave comments
+  * Leverage mainstream forum platforms if possible
+  * Comic frame recognition
  # Comic wiki integration
-  * TBD
+  * Construct a wiki specific to the ACG area
+  * Integrate with the wiki content
  # Achievement system
-  * TBD
+  * Track the reading history of end user
+  * Award achievements to end users who meet certain criterions by analyzing the statistics
+  * Community can create and maintain the achievement specifications
  # Offline/desktop version
-  * TBD
+  * Corresponding desktop version
+  * Extra file formats support such as RAR
+  * View online resource or create offline cache
  # Advertisement solution
-  * TBD
+  * Online advertisement support
+  * Easy to be embeded in HTML
+  * Desktop version also supports ad
+ # Misc
+  * I18n: zh-cn, zh-tw, en, jp
+  * Multiple server side technology support
+  * Corresponding HTML5 version
