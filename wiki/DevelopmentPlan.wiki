@@ -1,0 +1,8 @@
+#labels Phase-Design
+# Detailed plan for code development  
+
+= Development plan =
+
+ * Data provider for ImageStack and cache/preload mechanism 
+ * More layouts for ImageStack
+ * Scrolling/switching images
