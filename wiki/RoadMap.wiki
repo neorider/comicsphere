@@ -1,33 +1,35 @@
 #labels Phase-Requirements,Featured
-#Road map of the ComicSphere
+# Road map of the ComicSphere
 
-= Vision =
+= Road map =
+
+== Vision ==
 
 An online/offline comic viewer delivering best comic reading experience. Meanwhile, provides community/social features to dig its profiting potential.
 
-= Milestones planning =
+== Milestones planning ==
 
 Couples of milestones are planned:
 
-== Client side viewer with basic features  ==
+=== Client side viewer with basic features  ===
   * Text in *bold* or _italic_
   * Headings, paragraphs, and lists
   * Automatic links to other wiki pages
 
-== Client side viewer + server side content providers ==
+=== Client side viewer + server side content providers ===
  * TBD
 
-== On-spot comment system ==
+=== On-spot comment system ===
  * TBD
 
-== Comic wiki integration ==
+=== Comic wiki integration ===
  * TBD
 
-== Achievement system ==
+=== Achievement system ===
  * TBD
 
-== Offline/desktop version ==
+=== Offline/desktop version ===
  * TBD
 
-== Advertisement solution ==
+=== Advertisement solution ===
  * TBD
