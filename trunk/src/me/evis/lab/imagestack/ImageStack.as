@@ -16,6 +16,7 @@ import mx.events.PropertyChangeEvent;
 
 import spark.components.Button;
 import spark.components.Group;
+import spark.filters.DropShadowFilter;
 
 public class ImageStack extends Group implements ISelectableList
 {
@@ -54,6 +55,7 @@ public class ImageStack extends Group implements ISelectableList
         
         for each (var image:Object in _images)
         {
+            image.filters = [new DropShadowFilter()];
             this.addElement(IVisualElement(image));
         }
         

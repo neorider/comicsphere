@@ -2,10 +2,15 @@ package me.evis.lab.imagestack.supportClasses
 {
 import com.flashdynamix.motion.Tweensy;
 
+import flash.display.DisplayObject;
+import flash.events.Event;
+import flash.geom.Rectangle;
+
 import mx.core.ILayoutElement;
 
 import spark.components.Button;
 import spark.components.supportClasses.GroupBase;
+import spark.core.NavigationUnit;
 import spark.layouts.supportClasses.LayoutBase;
 
 public class HorizontalPagesLayout extends LayoutBase
@@ -14,6 +19,23 @@ public class HorizontalPagesLayout extends LayoutBase
     {
         super();
         this.clipAndEnableScrolling = true;
+    }
+    
+    override public function set target(value:GroupBase):void
+    {
+        if (super.target != value)
+        {
+            if (super.target)
+                super.target.removeEventListener(Event.RESIZE, onTargetResize);
+            if (value)
+                value.addEventListener(Event.RESIZE, onTargetResize);
+        }
+        super.target = value;
+    }
+    
+    private function onTargetResize(event:Event):void
+    {
+        event.target.invalidateDisplayList();
     }
     
 //    override public function measure():void
@@ -149,46 +171,25 @@ public class HorizontalPagesLayout extends LayoutBase
             if (!layoutElement || !layoutElement.includeInLayout)
                 continue;
             
-            if (layoutElement is Button)
-            {
-                var left:Number = parseValue(layoutElement.left);
-                var right:Number = parseValue(layoutElement.right);
-                var vCenter:Number = parseValue(layoutElement.verticalCenter);
-                var elementWidth:Number = layoutElement.getPreferredBoundsWidth();
-                var elementHeight:Number = layoutElement.getPreferredBoundsHeight();
-                
-                layoutElement.setLayoutBoundsSize(elementWidth, elementHeight);
-                
-                var childX:Number = NaN;
-                var childY:Number = NaN;
-                if (!isNaN(left))
-                    childX = left;
-                else if (!isNaN(right))
-                    childX = unscaledWidth - elementWidth - right;
-                if (!isNaN(vCenter))
-                    childY = Math.round((unscaledHeight - elementHeight) / 2 + vCenter);
-                // Set position
-                layoutElement.setLayoutBoundsPosition(childX, childY);
-            }
-            else
-            {
-                var left:Number = parseValue(layoutElement.left);
-                var right:Number = parseValue(layoutElement.right);
-                var vCenter:Number = parseValue(layoutElement.verticalCenter);
-                var elementWidth:Number = layoutElement.getPreferredBoundsWidth();
-                var elementHeight:Number = layoutElement.getPreferredBoundsHeight();
-                
-                layoutElement.setLayoutBoundsSize(elementWidth, elementHeight);
-                
-                layoutElement.setLayoutBoundsPosition(elementWidth * i, 
-                                                      Math.round((unscaledHeight - elementHeight) / 2));
-                
-                
-                // update content limits
-                maxX = Math.max(maxX, elementWidth * (i + 1));
-                maxY = Math.max(maxY, elementHeight);
-            }
+            var left:Number = parseValue(layoutElement.left);
+            var right:Number = parseValue(layoutElement.right);
+            var vCenter:Number = parseValue(layoutElement.verticalCenter);
+            var elementWidth:Number = layoutElement.getPreferredBoundsWidth();
+            var elementHeight:Number = layoutElement.getPreferredBoundsHeight();
             
+            layoutElement.setLayoutBoundsSize(elementWidth, elementHeight);
+            
+            //layoutElement.setLayoutBoundsPosition(elementWidth * i, 
+            //                                      Math.round((unscaledHeight - elementHeight) / 2));
+            
+            layoutElement.setLayoutBoundsPosition(layoutTarget.width * (i + 0.5) - elementHeight/2, 
+                                                  Math.round((unscaledHeight - elementHeight) / 2));
+            
+            // update content limits
+            maxX = Math.max(maxX, elementWidth * (i + 1));
+            maxY = Math.max(maxY, elementHeight);
+            
+            /*
             continue;
             
             var hCenter:Number = parseValue(layoutElement.horizontalCenter);
@@ -282,12 +283,53 @@ public class HorizontalPagesLayout extends LayoutBase
             
             // Set position
             layoutElement.setLayoutBoundsPosition(childX, childY);
-
+            */
         }
         
         // Make sure that if the content spans partially over a pixel to the right/bottom,
         // the content size includes the whole pixel.
         layoutTarget.setContentSize(Math.ceil(maxX), Math.ceil(maxY));
+    }
+    
+    override public function getHorizontalScrollPositionDelta(navigationUnit:uint):Number
+    {
+        var g:GroupBase = target;
+        if (!g)
+            return 0;     
+        
+        var scrollRect:Rectangle = getScrollRect();
+        if (!scrollRect)
+            return 0;
+        
+        // Special case: if the scrollRect's origin is 0,0 and it's bigger 
+        // than the target, then there's no where to scroll to
+        if ((scrollRect.x == 0) && (scrollRect.width >= g.contentWidth))
+            return 0;  
+        
+        // maxDelta is the horizontalScrollPosition delta required 
+        // to scroll to the END and minDelta scrolls to HOME. 
+        var maxDelta:Number = g.contentWidth - scrollRect.right;
+        var minDelta:Number = -scrollRect.left;
+        
+        switch(navigationUnit)
+        {
+            case NavigationUnit.LEFT:
+            case NavigationUnit.PAGE_LEFT:
+                return -g.width;
+            
+            case NavigationUnit.RIGHT:
+            case NavigationUnit.PAGE_RIGHT:
+                return g.width;
+            
+            case NavigationUnit.HOME: 
+                return minDelta;
+                
+            case NavigationUnit.END: 
+                return maxDelta;
+                
+            default:
+                return 0;
+        }
     }
     
     override protected function scrollPositionChanged():void

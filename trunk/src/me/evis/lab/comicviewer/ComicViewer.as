@@ -10,6 +10,7 @@ import mx.utils.ObjectUtil;
 
 import spark.components.Button;
 import spark.components.Group;
+import spark.components.HScrollBar;
 import spark.components.SkinnableContainer;
 
 public class ComicViewer extends SkinnableContainer
@@ -51,6 +52,11 @@ public class ComicViewer extends SkinnableContainer
         super.createChildren();
  
         this.addElement(_imageStack);
+//        
+//        var hScrollBar:HScrollBar = new HScrollBar();
+////        hScrollBar.visible = false;
+//        hScrollBar.viewport = _imageStack;
+//        this.addElement(hScrollBar);
     }
     
     //--------------------------------------------------------------------------

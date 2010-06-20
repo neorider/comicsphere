@@ -26,11 +26,16 @@
     </fx:Script>
     
     <fx:Declarations>
-        <mx:Image id="i1" source="images/png-2067.png" width="256" height="256" verticalCenter="-80" left="85"/>
+        <s:BitmapImage id="i1" source="@Embed('images/png-2067.png')" width="256" height="256" verticalCenter="-80" left="85"/>
+        <s:BitmapImage id="i2" x="137" y="176" source="@Embed('images/png-2068.png')" width="256" height="256"/>
+        <s:BitmapImage id="i3" source="@Embed('images/png-2069.png')" width="256" height="256" horizontalCenter="-192" verticalCenter="-81"/>
+        <s:BitmapImage id="i4" x="243" y="175" source="@Embed('images/png-2070.png')" width="256" height="256"/>
+        <s:BitmapImage id="i5" source="@Embed('images/png-2071.png')" width="256" height="256" horizontalCenter="-88" verticalCenter="-81"/>
+        <!--<mx:Image id="i1" source="images/png-2067.png" width="256" height="256" verticalCenter="-80" left="85"/>
         <mx:Image id="i2" x="137" y="176" source="images/png-2068.png" width="256" height="256"/>
         <mx:Image id="i3" source="images/png-2069.png" width="256" height="256" horizontalCenter="-192" verticalCenter="-81"/>
         <mx:Image id="i4" x="243" y="175" source="images/png-2070.png" width="256" height="256"/>
-        <mx:Image id="i5" source="images/png-2071.png" width="256" height="256" horizontalCenter="-88" verticalCenter="-81"/>
+        <mx:Image id="i5" source="images/png-2071.png" width="256" height="256" horizontalCenter="-88" verticalCenter="-81"/>-->
     </fx:Declarations>
     
     <comicviewer:ComicViewer id="comicViewer" 
