@@ -10,16 +10,35 @@
     <![CDATA[
         import me.evis.lab.comicviewer.ComicViewerSkin;
         
+        import mx.collections.ArrayCollection;
         import mx.events.FlexEvent;
         
 
         protected function application1_initializeHandler(event:FlexEvent):void
         {
-            comicViewer.imageStack.addItem(i1);
-            comicViewer.imageStack.addItem(i2);
-            comicViewer.imageStack.addItem(i3);
-            comicViewer.imageStack.addItem(i4);
-            comicViewer.imageStack.addItem(i5);
+            [Embed(source="images/png-2067.png")]
+            var img1:Class;
+            [Embed(source="images/png-2068.png")]
+            var img2:Class;
+            [Embed(source="images/png-2069.png")]
+            var img3:Class;
+            [Embed(source="images/png-2070.png")]
+            var img4:Class;
+            [Embed(source="images/png-2071.png")]
+            var img5:Class;
+            
+            var images:ArrayCollection = new ArrayCollection();
+            images.addItem(img1);
+            images.addItem(img2);
+            images.addItem(new img3());
+            images.addItem(new img4());
+            images.addItem(new img5());
+            comicViewer.imageStack.dataProvider = images;
+//            comicViewer.imageStack.addItem(i1);
+//            comicViewer.imageStack.addItem(i2);
+//            comicViewer.imageStack.addItem(i3);
+//            comicViewer.imageStack.addItem(i4);
+//            comicViewer.imageStack.addItem(i5);
         }
 
     ]]>

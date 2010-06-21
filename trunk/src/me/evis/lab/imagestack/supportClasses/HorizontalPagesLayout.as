@@ -6,6 +6,8 @@ import flash.display.DisplayObject;
 import flash.events.Event;
 import flash.geom.Rectangle;
 
+import me.evis.lab.imagestack.ImageStack;
+
 import mx.core.ILayoutElement;
 
 import spark.components.Button;
@@ -19,6 +21,7 @@ public class HorizontalPagesLayout extends LayoutBase
     {
         super();
         this.clipAndEnableScrolling = true;
+        this.useVirtualLayout = true;
     }
     
     override public function set target(value:GroupBase):void
@@ -167,7 +170,7 @@ public class HorizontalPagesLayout extends LayoutBase
         var maxY:Number = 0;
         for (var i:int = 0; i < count; i++)
         {
-            var layoutElement:ILayoutElement = layoutTarget.getElementAt(i);
+            var layoutElement:ILayoutElement = layoutTarget.getVirtualElementAt(i);
             if (!layoutElement || !layoutElement.includeInLayout)
                 continue;
             
@@ -334,35 +337,12 @@ public class HorizontalPagesLayout extends LayoutBase
     
     override protected function scrollPositionChanged():void
     {
-        var layoutTarget:GroupBase = target;
-        var count:int = layoutTarget.numElements;
-        for (var i:int = 0; i < count; i++)
-        {
-            var layoutElement:ILayoutElement = layoutTarget.getElementAt(i);
-            if (layoutElement is Button)
-            {
-                var left:Number = parseValue(layoutElement.left);
-                var right:Number = parseValue(layoutElement.right);
-                var vCenter:Number = parseValue(layoutElement.verticalCenter);
-                var elementWidth:Number = layoutElement.getPreferredBoundsWidth();
-                var elementHeight:Number = layoutElement.getPreferredBoundsHeight();
-                
-                layoutElement.setLayoutBoundsSize(elementWidth, elementHeight);
-                
-                var childX:Number = NaN;
-                var childY:Number = NaN;
-                if (!isNaN(left))
-                    childX = left + horizontalScrollPosition;
-                else if (!isNaN(right))
-                    childX = layoutTarget.width - elementWidth - right + horizontalScrollPosition;
-                if (!isNaN(vCenter))
-                    childY = layoutElement.getLayoutBoundsY();
-                // Set position
-                layoutElement.setLayoutBoundsPosition(childX, childY);
-            }
-        }
-        
-        super.scrollPositionChanged();
+//        var imageStack:ImageStack = ImageStack(target);
+//        var selectedIndex:int = imageStack.selectedIndex;
+//        
+//        horizontalScrollPosition = selectedIndex * imageStack.width;
+//        
+//        super.scrollPositionChanged();
     }
     
     /**

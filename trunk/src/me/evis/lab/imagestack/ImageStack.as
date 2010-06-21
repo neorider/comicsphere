@@ -1,24 +1,20 @@
 package me.evis.lab.imagestack
 {
-import com.flashdynamix.motion.Tweensy;
-
 import flash.events.Event;
-import flash.events.MouseEvent;
 
+import me.evis.lab.imagestack.supportClasses.BitmapImageRenderer;
 import me.evis.lab.imagestack.supportClasses.HorizontalPagesLayout;
 
 import mx.collections.ArrayCollection;
-import mx.controls.Image;
-import mx.core.ISelectableList;
+import mx.core.ClassFactory;
 import mx.core.IVisualElement;
 import mx.events.CollectionEvent;
-import mx.events.PropertyChangeEvent;
 
-import spark.components.Button;
-import spark.components.Group;
+import spark.components.DataGroup;
 import spark.filters.DropShadowFilter;
+import spark.primitives.BitmapImage;
 
-public class ImageStack extends Group implements ISelectableList
+public class ImageStack extends DataGroup
 {
     //--------------------------------------------------------------------------
     //
@@ -35,6 +31,8 @@ public class ImageStack extends Group implements ISelectableList
         });
         
         this.layout = new HorizontalPagesLayout();
+        //bitmapImage.properties = {source : data};
+        this.itemRenderer = new ClassFactory(BitmapImageRenderer);
     }
     
     //--------------------------------------------------------------------------
@@ -49,29 +47,35 @@ public class ImageStack extends Group implements ISelectableList
     //
     //--------------------------------------------------------------------------
     
-    override protected function commitProperties():void
-    {
-        this.removeAllElements();
-        
-        for each (var image:Object in _images)
-        {
-            image.filters = [new DropShadowFilter()];
-            this.addElement(IVisualElement(image));
-        }
-        
-        super.commitProperties();
-    }
+//    override protected function commitProperties():void
+//    {
+//        this.removeAllElements();
+//        
+//        for each (var image:Object in _images)
+//        {
+//            image.filters = [new DropShadowFilter()];
+//            this.addElement(IVisualElement(image));
+//        }
+//        
+//        super.commitProperties();
+//    }
     
     public function previous(event:Event = null):void
     {
         //			this.horizontalScrollPosition -= this.width;
-        Tweensy.to(this, {horizontalScrollPosition:horizontalScrollPosition - width});
+//        Tweensy.to(this, {horizontalScrollPosition:horizontalScrollPosition - width});
+        if (selectedIndex > 0)
+            selectedIndex --;
+        horizontalScrollPosition --;
     }
     
     public function next(event:Event = null):void
     {
         //            this.horizontalScrollPosition += this.width;
-        Tweensy.to(this, {horizontalScrollPosition:horizontalScrollPosition + width});
+//        Tweensy.to(this, {horizontalScrollPosition:horizontalScrollPosition + width});
+        if (selectedIndex < length - 1)
+            selectedIndex ++;
+        horizontalScrollPosition ++;
     }
     
     //--------------------------------------------------------------------------
@@ -86,7 +90,7 @@ public class ImageStack extends Group implements ISelectableList
     //  selectedIndex
     //----------------------------------
     
-    private var _selectedIndex:int = -1;
+    private var _selectedIndex:int = 0;
     
     public function get selectedIndex():int
     {
