@@ -5,6 +5,7 @@ import mx.core.IDataRenderer;
 import mx.events.FlexEvent;
 
 import spark.components.supportClasses.ItemRenderer;
+import spark.filters.DropShadowFilter;
 import spark.primitives.BitmapImage;
 
 public class BitmapImageRenderer extends ItemRenderer
@@ -14,6 +15,7 @@ public class BitmapImageRenderer extends ItemRenderer
     public function BitmapImageRenderer()
     {
         super();
+        bitmapImage.filters = [new DropShadowFilter(5.0, 90)];
         this.addElement(bitmapImage);
     }
     

@@ -2,7 +2,6 @@ package me.evis.lab.imagestack.supportClasses
 {
 import com.flashdynamix.motion.Tweensy;
 
-import flash.display.DisplayObject;
 import flash.events.Event;
 import flash.geom.Rectangle;
 
@@ -10,9 +9,9 @@ import me.evis.lab.imagestack.ImageStack;
 
 import mx.core.ILayoutElement;
 
-import spark.components.Button;
 import spark.components.supportClasses.GroupBase;
 import spark.core.NavigationUnit;
+import spark.events.IndexChangeEvent;
 import spark.layouts.supportClasses.LayoutBase;
 
 public class HorizontalPagesLayout extends LayoutBase
@@ -29,9 +28,15 @@ public class HorizontalPagesLayout extends LayoutBase
         if (super.target != value)
         {
             if (super.target)
+            {
                 super.target.removeEventListener(Event.RESIZE, onTargetResize);
+                super.target.removeEventListener(IndexChangeEvent.CHANGE, onTargetIndexChange);
+            }
             if (value)
+            {
                 value.addEventListener(Event.RESIZE, onTargetResize);
+                value.addEventListener(IndexChangeEvent.CHANGE, onTargetIndexChange);
+            }
         }
         super.target = value;
     }
@@ -39,6 +44,22 @@ public class HorizontalPagesLayout extends LayoutBase
     private function onTargetResize(event:Event):void
     {
         event.target.invalidateDisplayList();
+    }
+    
+    private function onTargetIndexChange(event:IndexChangeEvent):void
+    {
+        var imageStack:ImageStack = ImageStack(event.target);
+        var newIndex:int = event.newIndex;
+//        horizontalScrollPosition = newIndex * imageStack.width;
+        
+        Tweensy.to(imageStack, {horizontalScrollPosition:newIndex * imageStack.width});
+        //event.target.invalidateDisplayList();
+    }
+    
+    override protected function scrollPositionChanged():void
+    {
+        super.scrollPositionChanged();
+        target.invalidateDisplayList();
     }
     
 //    override public function measure():void
@@ -333,16 +354,6 @@ public class HorizontalPagesLayout extends LayoutBase
             default:
                 return 0;
         }
-    }
-    
-    override protected function scrollPositionChanged():void
-    {
-//        var imageStack:ImageStack = ImageStack(target);
-//        var selectedIndex:int = imageStack.selectedIndex;
-//        
-//        horizontalScrollPosition = selectedIndex * imageStack.width;
-//        
-//        super.scrollPositionChanged();
     }
     
     /**
