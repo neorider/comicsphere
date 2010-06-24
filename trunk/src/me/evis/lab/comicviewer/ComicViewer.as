@@ -1,8 +1,12 @@
 package me.evis.lab.comicviewer
 {
+import flash.display.Stage;
+import flash.display.StageDisplayState;
 import flash.events.Event;
 import flash.events.FocusEvent;
+import flash.events.KeyboardEvent;
 import flash.events.MouseEvent;
+import flash.ui.Keyboard;
 
 import me.evis.lab.imagestack.ImageStack;
 
@@ -10,15 +14,12 @@ import mx.binding.utils.BindingUtils;
 import mx.core.FlexGlobals;
 import mx.events.FlexEvent;
 import mx.styles.CSSStyleDeclaration;
-import mx.utils.ObjectUtil;
 
+import spark.components.Application;
 import spark.components.Button;
-import spark.components.Group;
-import spark.components.HScrollBar;
 import spark.components.Label;
 import spark.components.SkinnableContainer;
 import spark.components.TextInput;
-import spark.events.TextOperationEvent;
 
 public class ComicViewer extends SkinnableContainer
 {
@@ -33,6 +34,42 @@ public class ComicViewer extends SkinnableContainer
         _imageStack.percentHeight = 100;
         _imageStack.horizontalCenter = 0;
         _imageStack.verticalCenter = 0;
+        
+        // Add keypress handler
+        FlexGlobals.topLevelApplication.addEventListener(FlexEvent.APPLICATION_COMPLETE, 
+            function(event:FlexEvent):void {
+                var application:Application = Application(event.target);
+                var stage:Stage = application.stage;
+                stage.addEventListener(KeyboardEvent.KEY_UP, onGlobalKeyPress);
+                stage.focus = application;
+        });
+    }
+    
+    private function onGlobalKeyPress(event:KeyboardEvent):void
+    {
+        // Only works when global focus. TODO fix
+//        if (!event.target is TextInput)
+//        {
+            switch (event.keyCode)
+            {
+                // Also available when full screen in FP10
+                case Keyboard.RIGHT:
+                case Keyboard.DOWN:
+                case Keyboard.SPACE:
+                // Not available when full screen in FP10
+                case Keyboard.PAGE_DOWN:
+                    imageStack.next();
+                    break;
+                // Also available when full screen in FP10
+                case Keyboard.LEFT:
+                case Keyboard.UP:
+                // Not available when full screen in FP10
+                case Keyboard.BACKSPACE:
+                case Keyboard.PAGE_UP:
+                    imageStack.previous();
+                    break;
+            }
+//        }
     }
 
     //--------------------------------------------------------------------------
@@ -58,7 +95,7 @@ public class ComicViewer extends SkinnableContainer
     {
         super.createChildren();
  
-        this.addElement(_imageStack);
+        this.addElement(imageStack);
 //        
 //        var hScrollBar:HScrollBar = new HScrollBar();
 ////        hScrollBar.visible = false;
@@ -84,6 +121,9 @@ public class ComicViewer extends SkinnableContainer
     [SkinPart(required="false")]
     public var pageText:TextInput;
     
+    [SkinPart(required="false")]
+    public var fullScreenButton:Button;
+    
     override protected function partAdded(partName:String, instance:Object):void
     {
         super.partAdded(partName, instance);
@@ -91,22 +131,26 @@ public class ComicViewer extends SkinnableContainer
         if (instance == previousButton)
         {
             previousButton.label = "<<";
-            previousButton.addEventListener(MouseEvent.CLICK, _imageStack.previous);
+            previousButton.addEventListener(MouseEvent.CLICK, imageStack.previous);
         } 
         else if (instance == nextButton)
         {
             nextButton.label = ">>";
-            nextButton.addEventListener(MouseEvent.CLICK, _imageStack.next);
+            nextButton.addEventListener(MouseEvent.CLICK, imageStack.next);
         }
         else if (instance == sizeLabel)
         {
-            BindingUtils.bindProperty(sizeLabel, "text", _imageStack, "size");
+            BindingUtils.bindProperty(sizeLabel, "text", imageStack, "size");
         }
         else if (instance == pageText)
         {
-            BindingUtils.bindProperty(pageText, "text", _imageStack, "page");
+            BindingUtils.bindProperty(pageText, "text", imageStack, "page");
             pageText.addEventListener(FlexEvent.ENTER, onPageTextChanged);
             pageText.addEventListener(FocusEvent.FOCUS_OUT, onPageTextChanged);
+        }
+        else if (instance == fullScreenButton)
+        {
+            fullScreenButton.addEventListener(MouseEvent.CLICK, onFullScreenButtonClick);
         }
     }
     
@@ -115,8 +159,17 @@ public class ComicViewer extends SkinnableContainer
         var text:String = event.target.text;
         if (text && !isNaN(parseInt(text)))
         {
-            _imageStack.page = parseInt(text);
+            imageStack.page = parseInt(text);
         }
+    }
+    
+    private function onFullScreenButtonClick(event:MouseEvent):void
+    {
+        var stage:Stage = FlexGlobals.topLevelApplication.stage;
+        if (stage.displayState == StageDisplayState.NORMAL)
+            stage.displayState = StageDisplayState.FULL_SCREEN;
+        else
+            stage.displayState = StageDisplayState.NORMAL;
     }
     
     override protected function partRemoved(partName:String, instance:Object):void {
@@ -124,11 +177,11 @@ public class ComicViewer extends SkinnableContainer
         
         if (instance == previousButton)
         {
-            previousButton.removeEventListener(MouseEvent.CLICK, _imageStack.previous);
+            previousButton.removeEventListener(MouseEvent.CLICK, imageStack.previous);
         } 
         else if (instance == nextButton)
         {
-            nextButton.removeEventListener(MouseEvent.CLICK, _imageStack.next);
+            nextButton.removeEventListener(MouseEvent.CLICK, imageStack.next);
         }
     }
     
