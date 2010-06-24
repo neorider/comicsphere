@@ -53,6 +53,7 @@ public class ImageStack extends DataGroup
 //        super.commitProperties();
 //    }
 
+
     public function previous(event:Event = null):void
     {
         //			this.horizontalScrollPosition -= this.width;
@@ -69,12 +70,25 @@ public class ImageStack extends DataGroup
             selectedIndex ++;
     }
     
+    
+    
+    //----------------------------------
+    //  size [Readonly]
+    //----------------------------------
+
+    public function get size():int
+    {
+        if (dataProvider)
+            return dataProvider.length;
+        else
+            return 0;
+    }
+    
     //----------------------------------
     //  page
     //----------------------------------
     
-    private var _page:int = 1;
-    
+    [Bindable("change")]
     public function get page():int
     {
         return selectedIndex + 1;

@@ -1,17 +1,24 @@
 package me.evis.lab.comicviewer
 {
+import flash.events.Event;
+import flash.events.FocusEvent;
 import flash.events.MouseEvent;
 
 import me.evis.lab.imagestack.ImageStack;
 
+import mx.binding.utils.BindingUtils;
 import mx.core.FlexGlobals;
+import mx.events.FlexEvent;
 import mx.styles.CSSStyleDeclaration;
 import mx.utils.ObjectUtil;
 
 import spark.components.Button;
 import spark.components.Group;
 import spark.components.HScrollBar;
+import spark.components.Label;
 import spark.components.SkinnableContainer;
+import spark.components.TextInput;
+import spark.events.TextOperationEvent;
 
 public class ComicViewer extends SkinnableContainer
 {
@@ -71,6 +78,12 @@ public class ComicViewer extends SkinnableContainer
     [SkinPart(required="true")]
     public var nextButton:Button;
     
+    [SkinPart(required="false")]
+    public var sizeLabel:Label;
+    
+    [SkinPart(required="false")]
+    public var pageText:TextInput;
+    
     override protected function partAdded(partName:String, instance:Object):void
     {
         super.partAdded(partName, instance);
@@ -84,6 +97,25 @@ public class ComicViewer extends SkinnableContainer
         {
             nextButton.label = ">>";
             nextButton.addEventListener(MouseEvent.CLICK, _imageStack.next);
+        }
+        else if (instance == sizeLabel)
+        {
+            BindingUtils.bindProperty(sizeLabel, "text", _imageStack, "size");
+        }
+        else if (instance == pageText)
+        {
+            BindingUtils.bindProperty(pageText, "text", _imageStack, "page");
+            pageText.addEventListener(FlexEvent.ENTER, onPageTextChanged);
+            pageText.addEventListener(FocusEvent.FOCUS_OUT, onPageTextChanged);
+        }
+    }
+    
+    private function onPageTextChanged(event:Event):void
+    {
+        var text:String = event.target.text;
+        if (text && !isNaN(parseInt(text)))
+        {
+            _imageStack.page = parseInt(text);
         }
     }
     
