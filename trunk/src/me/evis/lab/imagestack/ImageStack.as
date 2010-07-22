@@ -4,7 +4,9 @@ import flash.events.Event;
 
 import me.evis.lab.imagestack.supportClasses.BitmapImageRenderer;
 import me.evis.lab.imagestack.supportClasses.HorizontalPagesLayout;
+import me.evis.lab.imagestack.supportClasses.ImageArrayList;
 
+import mx.collections.IList;
 import mx.core.ClassFactory;
 import mx.events.FlexEvent;
 
@@ -33,6 +35,24 @@ public class ImageStack extends DataGroup
     //  Properties
     //
     //--------------------------------------------------------------------------
+    
+    override public function set dataProvider(value:IList):void
+    {
+        if (dataProvider)
+        {
+            dataProvider.removeEventListener(IndexChangeEvent.CHANGE, selectedIndexChangeHandler);
+        }
+        super.dataProvider = value;
+        if (dataProvider)
+        {
+            dataProvider.addEventListener(IndexChangeEvent.CHANGE, selectedIndexChangeHandler);
+        }
+    }
+    
+    private function selectedIndexChangeHandler(event:IndexChangeEvent):void
+    {
+        this.dispatchEvent(event);
+    }
     
     //--------------------------------------------------------------------------
     //
@@ -103,31 +123,14 @@ public class ImageStack extends DataGroup
     //  selectedIndex
     //----------------------------------
     
-    private var _selectedIndex:int = 0;
-    
     [Bindable("change")]
     public function get selectedIndex():int
     {
-        return _selectedIndex;
+        return ImageArrayList(dataProvider).selectedIndex;
     }
     public function set selectedIndex(value:int):void
     {
-        if (_selectedIndex == value)
-            return;
-        
-        var oldIndex:int = _selectedIndex;
-        
-        if (value < 0)
-            _selectedIndex = 0;
-        else if (value >= dataProvider.length)
-            _selectedIndex = dataProvider.length - 1;
-        else
-            _selectedIndex = value;
-        
-        var changeEvent:IndexChangeEvent = new IndexChangeEvent(IndexChangeEvent.CHANGE);
-        changeEvent.oldIndex = oldIndex;
-        changeEvent.newIndex = _selectedIndex;
-        dispatchEvent(changeEvent);
+        ImageArrayList(dataProvider).selectedIndex = value;
     }
 }
 }

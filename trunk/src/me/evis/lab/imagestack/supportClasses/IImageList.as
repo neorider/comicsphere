@@ -1,17 +1,13 @@
 package me.evis.lab.imagestack.supportClasses
 {
-import flash.display.DisplayObject;
-
 import mx.core.ISelectableList;
 
-import org.osmf.image.ImageElement;
-
-public interface IImageList
+public interface IImageList extends ISelectableList
 {
-    public function get first():DisplayObject;
-    public function get previous():DisplayObject;
-    public function get current():DisplayObject;
-    public function get next():DisplayObject;
-    public function get last():DisplayObject;
+    function get first():ImageBuffer;
+    function get previous():ImageBuffer;
+    function get current():ImageBuffer;
+    function get next():ImageBuffer;
+    function get last():ImageBuffer;
 }
 }

@@ -27,7 +27,7 @@ public class BitmapImageRenderer extends ItemRenderer
 
     override public function set data(value:Object):void
     {
-        bitmapImage.source = value;
+        bitmapImage.source = ImageBuffer(value).bitmapData;
         dispatchEvent(new FlexEvent(FlexEvent.DATA_CHANGE));
     }
 }
