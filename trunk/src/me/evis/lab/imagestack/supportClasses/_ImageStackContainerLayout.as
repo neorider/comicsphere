@@ -2,9 +2,9 @@ package me.evis.lab.imagestack.supportClasses
 {
 import spark.components.supportClasses.ScrollerLayout;
 
-public class ImageStackContainerLayout extends ScrollerLayout
+public class _ImageStackContainerLayout extends ScrollerLayout
 {
-    public function ImageStackContainerLayout()
+    public function _ImageStackContainerLayout()
     {
         super();
     }

@@ -6,9 +6,9 @@ import mx.events.FlexEvent;
 
 import spark.primitives.BitmapImage;
 
-public class BitmapImageRenderer extends Image
+public class _BitmapImageRenderer extends Image
 {
-    public function BitmapImageRenderer()
+    public function _BitmapImageRenderer()
     {
         super();
     }

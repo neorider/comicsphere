@@ -23,7 +23,7 @@ import spark.core.NavigationUnit;
 
 [DefaultProperty("mxmlContent")]
 
-public class ImageStack2 extends SkinnableComponent
+public class _ImageStack2 extends SkinnableComponent
     implements IFocusManagerComponent, IVisualElementContainer
 {
     
@@ -71,7 +71,7 @@ public class ImageStack2 extends SkinnableComponent
     // Public Methods
     //----------------------------------
     
-    public function ImageStack2()
+    public function _ImageStack2()
     {
         super();
         // Needs instance at early stage.
