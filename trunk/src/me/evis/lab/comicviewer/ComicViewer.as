@@ -21,8 +21,12 @@ import spark.components.Label;
 import spark.components.SkinnableContainer;
 import spark.components.TextInput;
 
+[SkinState("viewer")]
 public class ComicViewer extends SkinnableContainer
 {
+    private static const STATE_NORMAL:String = "normal";
+    private static const STATE_VIEWER:String = "viewer";
+    private static const STATE_DISABLED:String = "disabled";
     
     public function ComicViewer()
     {
@@ -68,6 +72,10 @@ public class ComicViewer extends SkinnableContainer
                 case Keyboard.PAGE_UP:
                     imageStack.previous();
                     break;
+                case Keyboard.TAB:
+                    // Change State
+                    hideControls = !hideControls;
+                    break;
             }
 //        }
     }
@@ -84,6 +92,20 @@ public class ComicViewer extends SkinnableContainer
     {
         return _imageStack;
     }
+    
+    private var _hideControls:Boolean = false;
+
+    public function get hideControls():Boolean
+    {
+        return _hideControls;
+    }
+
+    public function set hideControls(value:Boolean):void
+    {
+        _hideControls = value;
+        invalidateSkinState();
+    }
+
     
     //--------------------------------------------------------------------------
     //
@@ -130,12 +152,10 @@ public class ComicViewer extends SkinnableContainer
         
         if (instance == previousButton)
         {
-            previousButton.label = "<<";
             previousButton.addEventListener(MouseEvent.CLICK, imageStack.previous);
         } 
         else if (instance == nextButton)
         {
-            nextButton.label = ">>";
             nextButton.addEventListener(MouseEvent.CLICK, imageStack.next);
         }
         else if (instance == sizeLabel)
@@ -183,6 +203,17 @@ public class ComicViewer extends SkinnableContainer
         {
             nextButton.removeEventListener(MouseEvent.CLICK, imageStack.next);
         }
+    }
+    
+    /**
+     *  @private
+     */
+    override protected function getCurrentSkinState():String
+    {
+        if (enabled && hideControls)
+            return STATE_VIEWER;
+        
+        return super.getCurrentSkinState();
     }
     
     //--------------------------------------------------------------------------

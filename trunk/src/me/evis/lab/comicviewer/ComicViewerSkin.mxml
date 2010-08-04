@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:Skin xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark" 
-    xmlns:fb="http://ns.adobe.com/flashbuilder/2009" alpha.disabled="0.5">
+<s:Skin xmlns:fx="http://ns.adobe.com/mxml/2009" 
+    xmlns:s="library://ns.adobe.com/flex/spark" 
+    xmlns:fb="http://ns.adobe.com/flashbuilder/2009" 
+    width="100%" height="100%" 
+    alpha.disabled="0.5"
+    currentState="normal">
+    
     <fx:Metadata>
         [HostComponent("me.evis.lab.comicviewer.ComicViewer")]
     </fx:Metadata>
@@ -32,8 +37,28 @@
     
     <s:states>
         <s:State name="normal" />
+        <s:State name="viewer" />
         <s:State name="disabled" />
     </s:states>
+    
+    <s:transitions>
+        <s:Transition fromState="normal" toState="viewer">
+            <s:Parallel>
+                <s:Wipe direction="up" target="{toolbar}" duration="300"/>
+                <s:Wipe direction="left" target="{previousButton}" duration="300"/>
+                <s:Wipe direction="right" target="{nextButton}" duration="300"/>
+                <s:Wipe direction="down" target="{pager}" duration="300"/>
+            </s:Parallel>
+        </s:Transition>
+        <s:Transition fromState="viewer" toState="normal">
+            <s:Parallel>
+                <s:Wipe direction="down" target="{toolbar}" duration="300"/>
+                <s:Wipe direction="right" target="{previousButton}" duration="300"/>
+                <s:Wipe direction="left" target="{nextButton}" duration="300"/>
+                <s:Wipe direction="up" target="{pager}" duration="300"/>
+            </s:Parallel>
+        </s:Transition>
+    </s:transitions>
     
     <!--- Defines the appearance of the SkinnableContainer class's background. -->
     <s:Rect id="background" left="0" right="0" top="0" bottom="0">
@@ -54,15 +79,22 @@
             <s:BasicLayout/>
         </s:layout>
     </s:Group>
+    
+    <s:SkinnableContainer id="toolbar" includeIn="normal" x="0" y="0" width="100%">
+        <s:layout>
+            <s:HorizontalLayout/>
+        </s:layout>
+        <s:Button id="browseButton" label="Browse"/>
+        <s:Button id="fullScreenButton" label="□" width="28"/>
+    </s:SkinnableContainer>
 
     <!--- @copy me.evis.lab.comicviewer.ComicViewer#previousButton -->
-    <s:Button id="previousButton" width="40" height="50" left="0" verticalCenter="0"/>
+    <s:Button id="previousButton" width="40" height="50" left="0" verticalCenter="0" label="&lt;&lt;" includeIn="normal"/>
     <!--- @copy me.evis.lab.comicviewer.ComicViewer#nextButton -->
-    <s:Button id="nextButton" width="40" height="50" right="0" verticalCenter="0"/>
+    <s:Button id="nextButton" width="40" height="50" right="0" verticalCenter="0" label="&gt;&gt;" includeIn="normal"/>
     <!--- @copy me.evis.lab.comicviewer.ComicViewer#fullScreenButton -->
-    <s:Button id="fullScreenButton" width="20" height="8" right="0" top="0"/>
     
-    <s:BorderContainer includeIn="normal" width="100" height="50" dropShadowVisible="true" horizontalCenter="0" bottom="0" cornerRadius="5">
+    <s:BorderContainer id="pager" includeIn="normal" width="100" height="50" dropShadowVisible="true" horizontalCenter="0" bottom="0" cornerRadius="5">
         <s:layout>
             <s:HorizontalLayout verticalAlign="middle" horizontalAlign="center"/>
         </s:layout>
