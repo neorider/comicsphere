@@ -3,12 +3,19 @@ package me.evis.lab.comicviewer
 import flash.display.Stage;
 import flash.display.StageDisplayState;
 import flash.events.Event;
+import flash.events.FileListEvent;
 import flash.events.FocusEvent;
 import flash.events.KeyboardEvent;
 import flash.events.MouseEvent;
+import flash.filesystem.File;
+import flash.net.FileReference;
+import flash.net.FileReferenceList;
 import flash.ui.Keyboard;
 
 import me.evis.lab.imagestack.ImageStack;
+import me.evis.lab.imagestack.supportClasses.ImageArrayList;
+import me.evis.lab.imagestack.supportClasses.ImageBuffer;
+import me.evis.lab.util.RuntimeUtil;
 
 import mx.binding.utils.BindingUtils;
 import mx.core.FlexGlobals;
@@ -146,6 +153,9 @@ public class ComicViewer extends SkinnableContainer
     [SkinPart(required="false")]
     public var fullScreenButton:Button;
     
+    [SkinPart(required="false")]
+    public var browseButton:Button;
+    
     override protected function partAdded(partName:String, instance:Object):void
     {
         super.partAdded(partName, instance);
@@ -172,6 +182,10 @@ public class ComicViewer extends SkinnableContainer
         {
             fullScreenButton.addEventListener(MouseEvent.CLICK, onFullScreenButtonClick);
         }
+        else if (instance == browseButton)
+        {
+            browseButton.addEventListener(MouseEvent.CLICK, onBrowseButtonClick);
+        }
     }
     
     private function onPageTextChanged(event:Event):void
@@ -190,6 +204,45 @@ public class ComicViewer extends SkinnableContainer
             stage.displayState = StageDisplayState.FULL_SCREEN;
         else
             stage.displayState = StageDisplayState.NORMAL;
+    }
+    
+    private function onBrowseButtonClick(event:MouseEvent):void
+    {
+        if (RuntimeUtil.isAIR())
+        {
+            var file:File = new File();
+            file.addEventListener(FileListEvent.SELECT_MULTIPLE, onNativeFileSelected);
+            file.browseForOpenMultiple("Browse");
+        }
+        else
+        {
+            var fileRefList:FileReferenceList = new FileReferenceList();
+            fileRefList.addEventListener(Event.SELECT, onFileSelected);
+            fileRefList.browse();
+        }
+    }
+    
+    private function onNativeFileSelected(fileListEvent:FileListEvent):void
+    {
+        var files:Array = fileListEvent.files;
+        var images:ImageArrayList = new ImageArrayList();
+        for each (var item:Object in files)
+        {
+            var file:File = item as File;
+            var image:ImageBuffer = new ImageBuffer(file.nativePath);
+            images.addItem(image);
+        }
+        this.imageStack.dataProvider = images;
+    }
+    
+    private function onFileSelected(event:Event):void
+    {
+        var fileRefList:FileReferenceList = event.target as FileReferenceList;
+        for each (var fileRef:FileReference in fileRefList)
+        {
+            fileRef.load();
+            // TODO
+        }
     }
     
     override protected function partRemoved(partName:String, instance:Object):void {
