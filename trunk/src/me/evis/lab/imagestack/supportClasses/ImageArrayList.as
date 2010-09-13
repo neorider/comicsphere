@@ -1,6 +1,5 @@
 package me.evis.lab.imagestack.supportClasses
 {
-import flash.events.Event;
 
 import mx.collections.ArrayList;
 
@@ -17,8 +16,7 @@ public class ImageArrayList extends ArrayList implements IImageList
     public function ImageArrayList(source:Array=null)
     {
         super(source);
-        preloadNext();
-        this.addEventListener(Event.CHANGE, preloadNext);
+        this.addEventListener(IndexChangeEvent.CHANGE, preloadNext);
     }
     
     //--------------------------------------------------------------------------
@@ -101,9 +99,9 @@ public class ImageArrayList extends ArrayList implements IImageList
     
     public var preloadSize:uint = 1;
     
-    protected function preloadNext(event:Event = null):void
+    protected function preloadNext(event:IndexChangeEvent = null):void
     {
-        for (var i:int = 1; i <= preloadSize; i++)
+        for (var i:int = 0; i <= preloadSize; i++)
         {
             var preloadIndex:int = selectedIndex + i;
             if (preloadIndex > length - 1)

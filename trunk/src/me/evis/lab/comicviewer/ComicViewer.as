@@ -170,6 +170,7 @@ public class ComicViewer extends SkinnableContainer
         }
         else if (instance == sizeLabel)
         {
+            // FIX cannot response to size change due to underlying Array implementation
             BindingUtils.bindProperty(sizeLabel, "text", imageStack, "size");
         }
         else if (instance == pageText)
@@ -225,11 +226,12 @@ public class ComicViewer extends SkinnableContainer
     private function onNativeFileSelected(fileListEvent:FileListEvent):void
     {
         var files:Array = fileListEvent.files;
+        files.sortOn("name");
         var images:ImageArrayList = new ImageArrayList();
         for each (var item:Object in files)
         {
             var file:File = item as File;
-            var image:ImageBuffer = new ImageBuffer(file.nativePath);
+            var image:ImageBuffer = new ImageBuffer(file.url);
             images.addItem(image);
         }
         this.imageStack.dataProvider = images;

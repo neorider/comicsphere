@@ -46,6 +46,7 @@ public class ImageStack extends DataGroup
         if (dataProvider)
         {
             dataProvider.addEventListener(IndexChangeEvent.CHANGE, selectedIndexChangeHandler);
+            ImageArrayList(dataProvider).selectedIndex = 0;
         }
     }
     
