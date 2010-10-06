@@ -204,8 +204,10 @@ public class ComicViewer extends SkinnableContainer
     private function onBrowseButtonClick(event:MouseEvent):void
     {
         var fileLoader:FileLoader = new FileLoader();
+        fileLoader.addEventListener(Event.COMPLETE, function(event:Event):void {
+            imageStack.dataProvider = fileLoader.images;
+        });
         fileLoader.openFiles();
-        this.imageStack.dataProvider = fileLoader.images;
     }
     
     override protected function partRemoved(partName:String, instance:Object):void {

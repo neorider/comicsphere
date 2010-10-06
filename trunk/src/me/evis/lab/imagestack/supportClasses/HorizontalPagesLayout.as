@@ -23,6 +23,8 @@ public class HorizontalPagesLayout extends LayoutBase
         this.useVirtualLayout = true;
     }
     
+    private var pageIndex:int;
+    
     override public function set target(value:GroupBase):void
     {
         if (super.target != value)
@@ -43,16 +45,18 @@ public class HorizontalPagesLayout extends LayoutBase
     
     private function onTargetResize(event:Event):void
     {
+        // TODO fix this, handle new horizontalScrollPosition
+        target.horizontalScrollPosition = pageIndex * target.width;
         event.target.invalidateDisplayList();
     }
     
     private function onTargetIndexChange(event:IndexChangeEvent):void
     {
         var imageStack:ImageStack = ImageStack(event.target);
-        var newIndex:int = event.newIndex;
+        pageIndex = event.newIndex;
 //        horizontalScrollPosition = newIndex * imageStack.width;
         
-        Tweensy.to(imageStack, {horizontalScrollPosition:newIndex * imageStack.width});
+        Tweensy.to(imageStack, {horizontalScrollPosition:pageIndex * imageStack.width});
         //event.target.invalidateDisplayList();
     }
     
@@ -187,31 +191,30 @@ public class HorizontalPagesLayout extends LayoutBase
             return;
         
         var count:int = layoutTarget.numElements;
-        var maxX:Number = 0;
-        var maxY:Number = 0;
+//        var maxX:Number = 0;
+//        var maxY:Number = 0;
         for (var i:int = 0; i < count; i++)
         {
             var layoutElement:ILayoutElement = layoutTarget.getVirtualElementAt(i);
             if (!layoutElement || !layoutElement.includeInLayout)
                 continue;
             
-            var left:Number = parseValue(layoutElement.left);
-            var right:Number = parseValue(layoutElement.right);
-            var vCenter:Number = parseValue(layoutElement.verticalCenter);
-            var elementWidth:Number = layoutElement.getPreferredBoundsWidth();
-            var elementHeight:Number = layoutElement.getPreferredBoundsHeight();
+//            var left:Number = parseValue(layoutElement.left);
+//            var right:Number = parseValue(layoutElement.right);
+//            var vCenter:Number = parseValue(layoutElement.verticalCenter);
+//            var elementWidth:Number = layoutElement.getPreferredBoundsWidth();
+//            var elementHeight:Number = layoutElement.getPreferredBoundsHeight();
             
-            layoutElement.setLayoutBoundsSize(elementWidth, elementHeight);
+            //layoutElement.setLayoutBoundsSize(elementWidth, elementHeight);
+            layoutElement.setLayoutBoundsSize(unscaledWidth, unscaledHeight);
+            layoutElement.setLayoutBoundsPosition(unscaledWidth * i, 0);
             
-            //layoutElement.setLayoutBoundsPosition(elementWidth * i, 
-            //                                      Math.round((unscaledHeight - elementHeight) / 2));
-            
-            layoutElement.setLayoutBoundsPosition(layoutTarget.width * (i + 0.5) - elementHeight/2, 
-                                                  Math.round((unscaledHeight - elementHeight) / 2));
+//            layoutElement.setLayoutBoundsPosition(layoutTarget.width * (i + 0.5) - elementHeight/2, 
+//                                                  Math.round((unscaledHeight - elementHeight) / 2));
             
             // update content limits
-            maxX = Math.max(maxX, elementWidth * (i + 1));
-            maxY = Math.max(maxY, elementHeight);
+//            maxX = Math.max(maxX, elementWidth * (i + 1));
+//            maxY = Math.max(maxY, elementHeight);
             
             /*
             continue;
@@ -312,7 +315,8 @@ public class HorizontalPagesLayout extends LayoutBase
         
         // Make sure that if the content spans partially over a pixel to the right/bottom,
         // the content size includes the whole pixel.
-        layoutTarget.setContentSize(Math.ceil(maxX), Math.ceil(maxY));
+//        layoutTarget.setContentSize(Math.ceil(maxX), Math.ceil(maxY));
+        layoutTarget.setContentSize(unscaledWidth, unscaledHeight);
     }
     
     override public function getHorizontalScrollPositionDelta(navigationUnit:uint):Number

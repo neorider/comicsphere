@@ -2,8 +2,15 @@ package me.evis.lab.imagestack.supportClasses
 {
 
 import mx.collections.ArrayList;
+import mx.collections.IList;
+import mx.events.CollectionEvent;
+import mx.events.CollectionEventKind;
+import mx.events.PropertyChangeEvent;
+import mx.events.PropertyChangeEventKind;
 
 import spark.events.IndexChangeEvent;
+
+[Event(name="change", type="spark.events.IndexChangeEvent")]
 
 public class ImageArrayList extends ArrayList implements IImageList
 {
@@ -16,7 +23,25 @@ public class ImageArrayList extends ArrayList implements IImageList
     public function ImageArrayList(source:Array=null)
     {
         super(source);
-        this.addEventListener(IndexChangeEvent.CHANGE, preloadNext);
+        this.addEventListener(CollectionEvent.COLLECTION_CHANGE, monitorLength);
+    }
+    
+    private function monitorLength(event:CollectionEvent):void
+    {
+        switch (event.kind)
+        {
+            case CollectionEventKind.ADD:
+            case CollectionEventKind.REMOVE:
+            case CollectionEventKind.RESET:
+                var list:IList = event.target as IList;
+                var lengthChangeEvent:PropertyChangeEvent =
+                    PropertyChangeEvent.createUpdateEvent(list, "length", null, list.length);   
+                dispatchEvent(lengthChangeEvent);
+                
+                break;
+            default:
+                return;
+        }
     }
     
     //--------------------------------------------------------------------------
@@ -50,10 +75,13 @@ public class ImageArrayList extends ArrayList implements IImageList
         else
             _selectedIndex = value;
         
-        var changeEvent:IndexChangeEvent = new IndexChangeEvent(IndexChangeEvent.CHANGE);
+        var changeEvent:IndexChangeEvent = 
+            new IndexChangeEvent(IndexChangeEvent.CHANGE);
         changeEvent.oldIndex = oldIndex;
         changeEvent.newIndex = _selectedIndex;
         dispatchEvent(changeEvent);
+        
+        preloadNext();
     }
     
     //--------------------------------------------------------------------------
@@ -113,6 +141,16 @@ public class ImageArrayList extends ArrayList implements IImageList
             if (!image.loaded && !image.loading)
             {
                 image.load();
+            }
+            
+            // TODO fix optimize this. Won't release the memory 
+            // when backward navigation.
+            var unloadIndex:int = selectedIndex - 2;
+            if (unloadIndex >= 0)
+            {
+                var imageToUnload:ImageBuffer = 
+                    getItemAt(unloadIndex) as ImageBuffer;
+                imageToUnload.unload();
             }
         }
     }

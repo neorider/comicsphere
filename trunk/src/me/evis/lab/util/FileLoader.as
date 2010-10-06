@@ -1,24 +1,39 @@
 package me.evis.lab.util
 {
+import deng.fzip.FZip;
+import deng.fzip.FZipEvent;
+import deng.fzip.FZipFile;
+
 import flash.events.Event;
+import flash.events.EventDispatcher;
 import flash.events.FileListEvent;
 import flash.filesystem.File;
 import flash.net.FileReference;
 import flash.net.FileReferenceList;
+import flash.net.URLRequest;
+import flash.utils.Dictionary;
 
 import me.evis.lab.imagestack.supportClasses.ImageArrayList;
 import me.evis.lab.imagestack.supportClasses.ImageBuffer;
 
-import mx.logging.ILogger;
-import mx.logging.Log;
+[Event(name="complete", type="flash.events.Event")]
 
-public class FileLoader
+public class FileLoader extends EventDispatcher
 {
+    public static const URL_SEPARATOR:String = "/";
+    
     // TODO logger
     //private const log:ILogger = Log.getLogger("FileLoader");
+
+    private var filesToLoad:Array = [];
+    private var loadComplete:Boolean = false;
     
     private var _images:ImageArrayList = new ImageArrayList();
 
+    /**
+     * Better invoke this getter after complete event.
+     * TODO refine this.
+     */
     public function get images():ImageArrayList
     {
         return _images;
@@ -47,21 +62,23 @@ public class FileLoader
     private function onNativeFileSelected(fileListEvent:FileListEvent):void
     {
         var files:Array = fileListEvent.files;
+        // record to loading status
+        filesToLoad = files.slice();
         files.sortOn("name");
         images.removeAll();
         for each (var item:Object in files)
         {
             var file:File = item as File;
-            var fileType:String = getFileType(file);
+            var fileType:String = FileTypeUtil.getFileType(file);
             switch (fileType)
             {
-                case FILE_TYPE_IMAGE:
+                case FileTypeUtil.FILE_TYPE_IMAGE:
                     handleImage(file);
                     break;
-                case FILE_TYPE_ZIP:
+                case FileTypeUtil.FILE_TYPE_ZIP:
                     handleZip(file);
                     break;
-                case FILE_TYPE_OTHERS:
+                case FileTypeUtil.FILE_TYPE_OTHERS:
                     //log.info("Skipped", file);
                     break;
             }
@@ -83,36 +100,43 @@ public class FileLoader
     {
         var image:ImageBuffer = new ImageBuffer(file.url);
         images.addItem(image);
+        completeFile(file);
+    }
+    
+    private function completeFile(file:File):void
+    {
+        filesToLoad.splice(filesToLoad.lastIndexOf(file), 1);
+        if (filesToLoad.length == 0)
+        {
+            dispatchEvent(new Event(Event.COMPLETE));
+        }
     }
     
     private function handleZip(file:File):void
     {
-        // TODO handles zip file using FZIP
-    }
-    
-    public static const FILE_TYPE_IMAGE:String = "image";
-    public static const FILE_TYPE_ZIP:String = "zip";
-    public static const FILE_TYPE_OTHERS:String = "others";
-    
-    public static function getFileType(fileRef:FileReference):String
-    {
-        if (!fileRef)
-            return null;
-        
-        switch (fileRef.type)
-        {
-            case ".jpg":
-            case ".jpeg":
-            case ".png":
-            case ".gif":
-                return FILE_TYPE_IMAGE;
-                
-            case ".zip":
-                return FILE_TYPE_ZIP;
-                
-            default:
-                return FILE_TYPE_OTHERS;
-        }
+        var zip:FZip = new FZip();
+        zip.addEventListener(FZipEvent.FILE_LOADED, function(event:FZipEvent):void {
+            var zFile:FZipFile = event.file;
+            var fileType:String = FileTypeUtil.getFileTypeFromFilename(zFile.filename);
+            switch (fileType)
+            {
+                case FileTypeUtil.FILE_TYPE_IMAGE:
+                    var mixedUrl:String = file.url + URL_SEPARATOR + zFile.filename;
+                    var image:ImageBuffer = new ImageBuffer(mixedUrl);
+                    images.addItem(image);
+                    break;
+                case FileTypeUtil.FILE_TYPE_ZIP:
+                    // TODO 
+                    break;
+                case FileTypeUtil.FILE_TYPE_OTHERS:
+                    //log.info("Skipped", file);
+                    break;
+            }
+        });
+        zip.addEventListener(Event.COMPLETE, function(event:Event):void {
+            completeFile(file);
+        });
+        zip.load(new URLRequest(file.url));
     }
 }
 }

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testrun name="" >
+<testsuite  name="Default Test Suite" project="ComicSphere">
+<testsuite name="me.evis.lab.imagestack.supportClasses:ImageBufferTest" type="testcaseclass">
+<testcase name="testIsInArchive" classname="me.evis.lab.imagestack.supportClasses:ImageBufferTest"/>
+</testsuite>
+</testsuite>
+</testrun>
