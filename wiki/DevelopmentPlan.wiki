@@ -1,13 +1,23 @@
+#summary Detailed plan for code development
 #labels Phase-Design
-#summary Detailed plan for code development  
 
 = Recent todos =
 
- * Data provider for `ImageStack` and cache/preload mechanism 
- * More layouts for `ImageStack`
+ * ~~Data provider for `ImageStack` and cache/preload mechanism ~~
  * Scrolling/switching images
+ * folder selection support (in AIR)
+ * zoom in/out
+ * rotation
+ * pagination effect
+ * book mark
+ * full screen keyboard shortcut
  
-== Planned tasks =
+= Planned tasks =
  
- * TBD
+ * More layouts for `ImageStack`
+ * book meta-data
+ * book shelf
+ * configurations
+ * default skin
+ * web content parser
  
