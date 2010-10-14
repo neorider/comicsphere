@@ -150,36 +150,57 @@ public class ComicViewer extends SkinnableContainer
     [SkinPart(required="false")]
     public var browseButton:Button;
     
+    [SkinPart(required="false")]
+    public var browseFolderButton:Button;
+    
     override protected function partAdded(partName:String, instance:Object):void
     {
         super.partAdded(partName, instance);
         
+        switch (instance)
+        {
+            case previousButton:
+                previousButton.addEventListener(MouseEvent.CLICK, imageStack.previous);
+                break;
+            
+            case nextButton:
+                nextButton.addEventListener(MouseEvent.CLICK, imageStack.next);
+                break;
+            
+            case sizeLabel:
+                // FIX cannot response to size change due to underlying Array implementation
+                BindingUtils.bindProperty(sizeLabel, "text", imageStack, "size");
+                break;
+            
+            case pageText:
+                BindingUtils.bindProperty(pageText, "text", imageStack, "page");
+                pageText.addEventListener(FlexEvent.ENTER, onPageTextChanged);
+                pageText.addEventListener(FocusEvent.FOCUS_OUT, onPageTextChanged);
+                break;
+            
+            case fullScreenButton:
+                fullScreenButton.addEventListener(MouseEvent.CLICK, onFullScreenButtonClick);
+                break;
+            
+            case browseButton:
+                browseButton.addEventListener(MouseEvent.CLICK, onBrowseButtonClick);
+                break;
+            
+            case browseFolderButton:
+                browseFolderButton.addEventListener(MouseEvent.CLICK, onBrowseFolderButtonClick);
+        }
+    }
+    
+    override protected function partRemoved(partName:String, instance:Object):void {
+        super.partRemoved(partName, instance);
+        
         if (instance == previousButton)
         {
-            previousButton.addEventListener(MouseEvent.CLICK, imageStack.previous);
+            previousButton.removeEventListener(MouseEvent.CLICK, imageStack.previous);
         } 
         else if (instance == nextButton)
         {
-            nextButton.addEventListener(MouseEvent.CLICK, imageStack.next);
-        }
-        else if (instance == sizeLabel)
-        {
-            // FIX cannot response to size change due to underlying Array implementation
-            BindingUtils.bindProperty(sizeLabel, "text", imageStack, "size");
-        }
-        else if (instance == pageText)
-        {
-            BindingUtils.bindProperty(pageText, "text", imageStack, "page");
-            pageText.addEventListener(FlexEvent.ENTER, onPageTextChanged);
-            pageText.addEventListener(FocusEvent.FOCUS_OUT, onPageTextChanged);
-        }
-        else if (instance == fullScreenButton)
-        {
-            fullScreenButton.addEventListener(MouseEvent.CLICK, onFullScreenButtonClick);
-        }
-        else if (instance == browseButton)
-        {
-            browseButton.addEventListener(MouseEvent.CLICK, onBrowseButtonClick);
+            nextButton.removeEventListener(MouseEvent.CLICK, imageStack.next);
         }
     }
     
@@ -210,17 +231,13 @@ public class ComicViewer extends SkinnableContainer
         fileLoader.openFiles();
     }
     
-    override protected function partRemoved(partName:String, instance:Object):void {
-        super.partRemoved(partName, instance);
-        
-        if (instance == previousButton)
-        {
-            previousButton.removeEventListener(MouseEvent.CLICK, imageStack.previous);
-        } 
-        else if (instance == nextButton)
-        {
-            nextButton.removeEventListener(MouseEvent.CLICK, imageStack.next);
-        }
+    private function onBrowseFolderButtonClick(event:MouseEvent):void
+    {
+        var fileLoader:FileLoader = new FileLoader();
+        fileLoader.addEventListener(Event.COMPLETE, function(event:Event):void {
+            imageStack.dataProvider = fileLoader.images;
+        });
+        fileLoader.openFolder();
     }
     
     /**

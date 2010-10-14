@@ -85,6 +85,7 @@
             <s:HorizontalLayout/>
         </s:layout>
         <s:Button id="browseButton" label="Browse"/>
+        <s:Button id="browseFolderButton" label="Browse Folder"/>
         <s:Button id="fullScreenButton" label="□" width="28"/>
     </s:SkinnableContainer>
 

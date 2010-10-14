@@ -16,6 +16,8 @@ import flash.utils.Dictionary;
 import me.evis.lab.imagestack.supportClasses.ImageArrayList;
 import me.evis.lab.imagestack.supportClasses.ImageBuffer;
 
+import mx.controls.Alert;
+
 [Event(name="complete", type="flash.events.Event")]
 
 public class FileLoader extends EventDispatcher
@@ -39,16 +41,15 @@ public class FileLoader extends EventDispatcher
         return _images;
     }
     
-    public function FileLoader()
-    {
-    }
-    
     public function openFiles():void
     {
         if (RuntimeUtil.isAIR())
         {
             var file:File = new File();
-            file.addEventListener(FileListEvent.SELECT_MULTIPLE, onNativeFileSelected);
+            file.addEventListener(FileListEvent.SELECT_MULTIPLE, function(fileListEvent:FileListEvent):void{
+                var files:Array = fileListEvent.files;
+                handleNativeFiles(files);
+            });
             file.browseForOpenMultiple("Browse");
         }
         else
@@ -59,9 +60,27 @@ public class FileLoader extends EventDispatcher
         }
     }
     
-    private function onNativeFileSelected(fileListEvent:FileListEvent):void
+    // TODO Sub folders not supported yet
+    public function openFolder():void
     {
-        var files:Array = fileListEvent.files;
+        if (!RuntimeUtil.isAIR())
+        {
+            Alert.show("Browsing folder is not supported in online version, please install the offline AIR version",
+                "Error");
+            return;
+        }
+        
+        var file:File = new File();
+        file.addEventListener(Event.SELECT, function(event:Event):void {
+            var folder:File = event.target as File;
+            var files:Array = folder.getDirectoryListing();
+            handleNativeFiles(files);
+        });
+        file.browseForDirectory("Browse folder");
+    }
+    
+    private function handleNativeFiles(files:Array):void
+    {
         // record to loading status
         filesToLoad = files.slice();
         files.sortOn("name");
@@ -82,7 +101,6 @@ public class FileLoader extends EventDispatcher
                     //log.info("Skipped", file);
                     break;
             }
-            
         }
     }
     
@@ -101,15 +119,6 @@ public class FileLoader extends EventDispatcher
         var image:ImageBuffer = new ImageBuffer(file.url);
         images.addItem(image);
         completeFile(file);
-    }
-    
-    private function completeFile(file:File):void
-    {
-        filesToLoad.splice(filesToLoad.lastIndexOf(file), 1);
-        if (filesToLoad.length == 0)
-        {
-            dispatchEvent(new Event(Event.COMPLETE));
-        }
     }
     
     private function handleZip(file:File):void
@@ -137,6 +146,19 @@ public class FileLoader extends EventDispatcher
             completeFile(file);
         });
         zip.load(new URLRequest(file.url));
+    }
+    
+    /**
+     * Mark one single file as "load complete" and check whether all files 
+     * have been loaded.
+     */
+    private function completeFile(file:File):void
+    {
+        filesToLoad.splice(filesToLoad.lastIndexOf(file), 1);
+        if (filesToLoad.length == 0)
+        {
+            dispatchEvent(new Event(Event.COMPLETE));
+        }
     }
 }
 }
