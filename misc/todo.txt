@@ -1,0 +1,11 @@
+ * folder selection support (in AIR)
+ * zoom in/out
+ * rotation
+ * pagination effect
+ * book mark
+ * full screen keyboard shortcut
+ * book meta-data
+ * book shelf
+ * configurations
+ * default skin
+ * web content parser

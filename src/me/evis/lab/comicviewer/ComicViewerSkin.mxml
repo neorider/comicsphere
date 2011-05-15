@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Skin xmlns:fx="http://ns.adobe.com/mxml/2009" 
+    xmlns:s="library://ns.adobe.com/flex/spark" 
+    xmlns:fb="http://ns.adobe.com/flashbuilder/2009" 
+    width="100%" height="100%" 
+    alpha.disabled="0.5"
+    currentState="normal">
+    
+    <fx:Metadata>
+        [HostComponent("me.evis.lab.comicviewer.ComicViewer")]
+    </fx:Metadata>
+
+    <fx:Script fb:purpose="styling">
+        <![CDATA[         
+            /**
+             *  @private
+             */
+            override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number) : void
+            {
+                // Push backgroundColor and backgroundAlpha directly.
+                // Handle undefined backgroundColor by hiding the background object.
+                if (isNaN(getStyle("backgroundColor")))
+                {
+                    background.visible = false;
+                }
+                else
+                {
+                    background.visible = true;
+                    bgFill.color = getStyle("backgroundColor");
+                    bgFill.alpha = getStyle("backgroundAlpha");
+                }
+                
+                super.updateDisplayList(unscaledWidth, unscaledHeight);
+            }
+        ]]>        
+    </fx:Script>
+    
+    <s:states>
+        <s:State name="normal" />
+        <s:State name="viewer" />
+        <s:State name="disabled" />
+    </s:states>
+    
+    <s:transitions>
+        <s:Transition fromState="normal" toState="viewer">
+            <s:Parallel>
+                <s:Wipe direction="up" target="{toolbar}" duration="300"/>
+                <s:Wipe direction="left" target="{previousButton}" duration="300"/>
+                <s:Wipe direction="right" target="{nextButton}" duration="300"/>
+                <s:Wipe direction="down" target="{pager}" duration="300"/>
+            </s:Parallel>
+        </s:Transition>
+        <s:Transition fromState="viewer" toState="normal">
+            <s:Parallel>
+                <s:Wipe direction="down" target="{toolbar}" duration="300"/>
+                <s:Wipe direction="right" target="{previousButton}" duration="300"/>
+                <s:Wipe direction="left" target="{nextButton}" duration="300"/>
+                <s:Wipe direction="up" target="{pager}" duration="300"/>
+            </s:Parallel>
+        </s:Transition>
+    </s:transitions>
+    
+    <!--- Defines the appearance of the SkinnableContainer class's background. -->
+    <s:Rect id="background" left="0" right="0" top="0" bottom="0">
+        <s:fill>
+            <!--- @private -->
+            <s:SolidColor id="bgFill" color="#FFFFFF"/>
+        </s:fill>
+    </s:Rect>
+    
+    <!--
+        Note: setting the minimum size to 0 here so that changes to the host component's
+        size will not be thwarted by this skin part's minimum size.   This is a compromise,
+        more about it here: http://bugs.adobe.com/jira/browse/SDK-21143
+    -->
+    <!--- @copy spark.components.SkinnableContainer#contentGroup -->
+    <s:Group id="contentGroup" left="0" right="0" top="0" bottom="0" minWidth="50" minHeight="50">
+        <s:layout>
+            <s:BasicLayout/>
+        </s:layout>
+    </s:Group>
+    
+    <s:SkinnableContainer id="toolbar" includeIn="normal" x="0" y="0" width="100%">
+        <s:layout>
+            <s:HorizontalLayout/>
+        </s:layout>
+        <s:Button id="browseButton" label="Browse"/>
+        <s:Button id="browseFolderButton" label="Browse Folder"/>
+        <s:Button id="fullScreenButton" label="□" width="28"/>
+    </s:SkinnableContainer>
+
+    <!--- @copy me.evis.lab.comicviewer.ComicViewer#previousButton -->
+    <s:Button id="previousButton" width="40" height="50" left="0" verticalCenter="0" label="&lt;&lt;" includeIn="normal"/>
+    <!--- @copy me.evis.lab.comicviewer.ComicViewer#nextButton -->
+    <s:Button id="nextButton" width="40" height="50" right="0" verticalCenter="0" label="&gt;&gt;" includeIn="normal"/>
+    <!--- @copy me.evis.lab.comicviewer.ComicViewer#fullScreenButton -->
+    
+    <s:BorderContainer id="pager" includeIn="normal" width="100" height="50" dropShadowVisible="true" horizontalCenter="0" bottom="0" cornerRadius="5">
+        <s:layout>
+            <s:HorizontalLayout verticalAlign="middle" horizontalAlign="center"/>
+        </s:layout>
+        <!--- @copy me.evis.lab.comicviewer.ComicViewer#pageText -->
+        <s:TextInput id="pageText" width="42" textAlign="right"/>
+        <s:Label text="/" textAlign="center"/>
+        <!--- @copy me.evis.lab.comicviewer.ComicViewer#sizeLabel -->
+        <s:Label id="sizeLabel" text="" textAlign="left"/>
+    </s:BorderContainer>
+</s:Skin>

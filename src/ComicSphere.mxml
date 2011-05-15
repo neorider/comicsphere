@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:WindowedApplication xmlns:fx="http://ns.adobe.com/mxml/2009" 
+               xmlns:s="library://ns.adobe.com/flex/spark" 
+               xmlns:imagestack="me.evis.lab.imagestack.*" 
+               xmlns:mx="library://ns.adobe.com/flex/mx" 
+               xmlns:comicviewer="me.evis.lab.comicviewer.*"
+               initialize="application1_initializeHandler(event)">
+    
+    <fx:Script>
+    <![CDATA[
+        import me.evis.lab.comicviewer.ComicViewerSkin;
+        import me.evis.lab.imagestack.supportClasses.ImageArrayList;
+        import me.evis.lab.imagestack.supportClasses.ImageBuffer;
+        
+        import mx.collections.ArrayCollection;
+        import mx.controls.Image;
+        import mx.events.FlexEvent;
+        
+
+        protected function application1_initializeHandler(event:FlexEvent):void
+        {
+//            [Embed(source="images/png-2067.png")]
+//            var img1:Class;
+//            [Embed(source="images/png-2068.png")]
+//            var img2:Class;
+//            [Embed(source="images/png-2069.png")]
+//            var img3:Class;
+//            [Embed(source="images/png-2070.png")]
+//            var img4:Class;
+//            [Embed(source="images/png-2071.png")]
+//            var img5:Class;
+//            
+            var images:ImageArrayList = new ImageArrayList([
+                new ImageBuffer("file://F:/fb-ws/ComicSphere/assets/images/png-2067.png"),
+                new ImageBuffer("file://F:/fb-ws/ComicSphere/assets/images/png-2068.png"),
+                new ImageBuffer("file://F:/fb-ws/ComicSphere/assets/images/png-2069.png"),
+                new ImageBuffer("file://F:/fb-ws/ComicSphere/assets/images/png-2070.png"),
+                new ImageBuffer("file://F:/fb-ws/ComicSphere/assets/images/png-2071.png"),
+                new ImageBuffer("file://F:/fb-ws/ComicSphere/assets/images/png-2072.png")
+            ]);
+            comicViewer.imageStack.dataProvider = images;
+        }
+
+    ]]>
+    </fx:Script>
+    
+    <fx:Declarations>
+        <!--<mx:Image id="i1" source="images/png-2067.png" width="256" height="256" verticalCenter="-80" left="85"/>
+        <mx:Image id="i2" x="137" y="176" source="images/png-2068.png" width="256" height="256"/>
+        <mx:Image id="i3" source="images/png-2069.png" width="256" height="256" horizontalCenter="-192" verticalCenter="-81"/>
+        <mx:Image id="i4" x="243" y="175" source="images/png-2070.png" width="256" height="256"/>
+        <mx:Image id="i5" source="images/png-2071.png" width="256" height="256" horizontalCenter="-88" verticalCenter="-81"/>-->
+    </fx:Declarations>
+    
+    <comicviewer:ComicViewer id="comicViewer" 
+                             width="100%" height="100%"/>
+</s:WindowedApplication>
